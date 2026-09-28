@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart | CraveCart</title>
+  <style>
+    :root { --orange:#f97316; --ink:#18211b; --muted:#667085; --cream:#fffaf3; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Arial,sans-serif; color:var(--ink); background:var(--cream); }
+    nav, main, footer { max-width:920px; margin:auto; padding-left:24px; padding-right:24px; }
+    nav { height:76px; display:flex; justify-content:space-between; align-items:center; }
+    .brand { color:var(--orange); font-size:24px; font-weight:800; text-decoration:none; }
+    .nav-link { color:var(--ink); font-weight:700; text-decoration:none; }
+    h1 { font-size:clamp(38px,5vw,56px); margin:38px 0 10px; }
+    .lead { color:var(--muted); margin:0 0 28px; font-size:18px; }
+    .cart-box { background:white; border-radius:20px; padding:28px; box-shadow:0 10px 30px #5d3c1a10; margin-bottom:48px; }
+    .add-row { display:flex; gap:10px; margin-bottom:22px; }
+    select { flex:1; border:1px solid #eaded2; border-radius:10px; padding:12px; font:inherit; background:white; }
+    button { border:0; border-radius:10px; padding:12px 16px; background:var(--orange); color:white; font-weight:800; cursor:pointer; font:inherit; }
+    .cart-item { display:grid; grid-template-columns:1fr auto auto; gap:18px; align-items:center; border-top:1px solid #f0e5d9; padding:16px 0; }
+    .price { font-weight:800; }
+    .delete { color:#b54708; background:#fff2e4; }
+    .total { display:flex; justify-content:space-between; align-items:center; border-top:2px solid var(--ink); margin-top:6px; padding-top:20px; font-size:20px; font-weight:800; }
+    .empty { color:var(--muted); padding:24px 0 4px; text-align:center; }
+    footer { color:var(--muted); padding-bottom:32px; }
+    @media (max-width:540px) { .cart-box { padding:20px; } .add-row { flex-direction:column; } .cart-item { grid-template-columns:1fr auto; } .delete { grid-column:1 / -1; } }
+  </style>
+</head>
+<body>
+  <nav><a class="brand" href="/home">CraveCart</a><a class="nav-link" href="/home">Browse food</a></nav>
+  <main>
+    <h1>Your cart</h1>
+    <p class="lead">Add meals, review their costs, or remove anything you no longer want.</p>
+    <section class="cart-box" aria-label="Shopping cart">
+      <div class="add-row"><select id="food-select" aria-label="Choose a meal"></select><button id="add-item" type="button">Add to cart</button></div>
+      <div id="cart-items"></div>
+      <div class="total"><span>Total amount</span><span id="total">0.00</span></div>
+    </section>
+  </main>
+  <footer>© 2026 CraveCart</footer>
+  <script>
+    const menu = [
+      { name: "🍕 Pizza", price: 12.99 }, { name: "🍔 Burgers", price: 9.99 },
+      { name: "🥗 Healthy", price: 8.99 }, { name: "🍛 Indian", price: 11.49 }, { name: "🍰 Desserts", price: 6.49 }
+    ];
+    const select = document.getElementById("food-select");
+    const cartItems = document.getElementById("cart-items");
+    const total = document.getElementById("total");
+    let cart = JSON.parse(localStorage.getItem("craveCart") || "[]");
+    const formatPrice = (price) => `$${price.toFixed(2)}`;
+
+    select.innerHTML = menu.map((item, index) => `<option value="${index}">${item.name} — ${formatPrice(item.price)}</option>`).join("");
+    function saveCart() { localStorage.setItem("craveCart", JSON.stringify(cart)); }
+    function renderCart() {
+      if (!cart.length) {
+        cartItems.innerHTML = '<p class="empty">Your cart is empty. Add something delicious above.</p>';
+      } else {
+        cartItems.innerHTML = cart.map((item, index) => `<div class="cart-item"><strong>${item.name}</strong><span class="price">${formatPrice(item.price)}</span><button class="delete" data-index="${index}" type="button">Remove</button></div>`).join("");
+      }
+      total.textContent = formatPrice(cart.reduce((sum, item) => sum + item.price, 0));
+    }
+    document.getElementById("add-item").addEventListener("click", () => { cart.push(menu[select.value]); saveCart(); renderCart(); });
+    cartItems.addEventListener("click", (event) => { if (event.target.matches(".delete")) { cart.splice(Number(event.target.dataset.index), 1); saveCart(); renderCart(); } });
+    renderCart();
+  </script>
+</body>
+</html>

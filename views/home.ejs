@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CraveCart | Fresh food, delivered fast</title>
+  <style>
+    :root { --orange: #f97316; --ink: #18211b; --muted: #667085; --cream: #fffaf3; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; color: var(--ink); background: var(--cream); }
+    nav, main, footer { max-width: 1120px; margin: auto; padding-left: 24px; padding-right: 24px; }
+    nav { height: 76px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-size: 24px; font-weight: 800; color: var(--orange); text-decoration: none; }
+    .nav-link { color: var(--ink); font-weight: 700; text-decoration: none; }
+    .hero { padding: 64px 0 54px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 50px; align-items: center; }
+    .eyebrow { color: var(--orange); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; }
+    h1 { font-size: clamp(42px, 6vw, 68px); line-height: 1.05; margin: 14px 0 20px; }
+    .lead { font-size: 19px; line-height: 1.6; color: var(--muted); max-width: 590px; }
+    .search { display: flex; background: white; border: 1px solid #eaded2; border-radius: 14px; padding: 7px; max-width: 520px; margin-top: 30px; box-shadow: 0 8px 24px #5d3c1a13; }
+    .search input { border: 0; outline: 0; flex: 1; padding: 12px; font-size: 15px; }
+    .button { display: inline-block; border: 0; border-radius: 10px; padding: 13px 19px; background: var(--orange); color: white; font-weight: 800; text-decoration: none; cursor: pointer; }
+    .food-card { background: #254c37; color: white; border-radius: 28px; padding: 34px; min-height: 340px; position: relative; overflow: hidden; }
+    .food-card::after { content: "🍜"; position: absolute; font-size: 170px; right: -24px; bottom: -32px; transform: rotate(-12deg); }
+    .food-card p { color: #d9eadf; max-width: 235px; line-height: 1.55; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; padding-bottom: 24px; }
+    .chip { padding: 10px 15px; background: white; border-radius: 999px; border: 1px solid #eaded2; font-weight: 700; cursor: pointer; }
+    .chip:hover { border-color: var(--orange); color: var(--orange); }
+    .benefits { background: white; padding: 45px 0; }
+    .benefit-grid { max-width: 1120px; padding: 0 24px; margin: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .benefit { padding: 22px; border-radius: 16px; background: #fff8ef; }
+    .benefit h3 { margin: 10px 0 8px; }
+    .benefit p { color: var(--muted); line-height: 1.5; margin: 0; }
+    footer { padding-top: 25px; padding-bottom: 35px; color: var(--muted); }
+    @media (max-width: 720px) { .hero { grid-template-columns: 1fr; padding-top: 35px; } .food-card { min-height: 260px; } .benefit-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="brand" href="/home">CraveCart</a>
+    <div style="display:flex; gap:22px; align-items:center;"><a class="nav-link" href="/cart">Cart <span id="cart-count">(0)</span></a><a class="nav-link" href="/about">About us</a></div>
+  </nav>
+  <main>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Your next meal is nearby</div>
+        <h1>Food you love, right to your door.</h1>
+        <p class="lead">Discover local favourites, track every order live, and enjoy delicious meals without leaving home.</p>
+        <form class="search">
+          <input aria-label="Delivery address" placeholder="Enter your delivery address" type="text">
+          <button class="button" type="submit">Find food</button>
+        </form>
+      </div>
+      <aside class="food-card">
+        <div class="eyebrow" style="color:#ffbf86">Tonight's pick</div>
+        <h2>Hot bowls, happy evenings.</h2>
+        <p>From comfort classics to new flavours, your perfect order is just a few taps away.</p>
+      </aside>
+    </section>
+    <section>
+      <h2>What are you craving?</h2>
+      <div class="chips"><span class="chip">🍕 Pizza</span><span class="chip">🍔 Burgers</span><span class="chip">🥗 Healthy</span><span class="chip">🍛 Indian</span><span class="chip">🍰 Desserts</span></div>
+    </section>
+  </main>
+  <section class="benefits">
+    <div class="benefit-grid">
+      <div class="benefit"><div>⚡</div><h3>Fast delivery</h3><p>Freshly prepared meals delivered when you want them.</p></div>
+      <div class="benefit"><div>📍</div><h3>Live tracking</h3><p>Know exactly where your order is, from kitchen to doorstep.</p></div>
+      <div class="benefit"><div>⭐</div><h3>Local favourites</h3><p>Explore highly rated restaurants and hidden neighbourhood gems.</p></div>
+    </div>
+  </section>
+  <footer>© 2026 CraveCart · <a href="/about">Learn about us</a></footer>
+  <script>
+    const cartCount = document.getElementById("cart-count");
+    const foodChoices = document.querySelectorAll(".chip");
+    const menu = {
+      "🍕 Pizza": 12.99,
+      "🍔 Burgers": 9.99,
+      "🥗 Healthy": 8.99,
+      "🍛 Indian": 11.49,
+      "🍰 Desserts": 6.49
+    };
+    let cart = JSON.parse(localStorage.getItem("craveCart") || "[]");
+
+    function updateCartCount() {
+      cartCount.textContent = `(${cart.length})`;
+    }
+
+    foodChoices.forEach((choice) => {
+      choice.addEventListener("click", () => {
+        const name = choice.textContent.trim();
+        cart.push({ name, price: menu[name] || 0 });
+        localStorage.setItem("craveCart", JSON.stringify(cart));
+        updateCartCount();
+      });
+    });
+
+    updateCartCount();
+  </script>
+</body>
+</html>
